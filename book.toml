@@ -1,13 +1,13 @@
 [book]
-title = "笔记本"
+title = "一本不成器的笔记罢了"
 authors = ["Aaron Taner"]
 language = "en"
 multilingual = false
 src = "src"
-description = "一本不成器的笔记本罢了"
+description = "一本不成器的笔记罢了"
 
 [output.html]
-cname = "book.mapkts.com"
+cname = "keynote.mapkts.com"
 google-analytics = "UA-113141331-1"
 
 [output.html.print]
