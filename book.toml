@@ -1,0 +1,22 @@
+[book]
+title = "笔记本"
+authors = ["Aaron Taner"]
+language = "en"
+multilingual = false
+src = "src"
+description = "一本不成器的笔记本罢了"
+
+[output.html]
+google-analytics = "UA-113141331-1"
+
+[output.html.print]
+enable = true
+
+[output.html.fold]
+enable = false
+level = 0
+
+[output.html.playground]
+editable = true
+copy-js = true
+line-numbers = false
