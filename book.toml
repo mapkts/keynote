@@ -7,6 +7,7 @@ src = "src"
 description = "一本不成器的笔记本罢了"
 
 [output.html]
+cname = "book.mapkts.com"
 google-analytics = "UA-113141331-1"
 
 [output.html.print]
