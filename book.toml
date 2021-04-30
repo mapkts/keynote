@@ -9,6 +9,9 @@ description = "一本不成器的笔记罢了"
 [output.html]
 cname = "keynote.mapkts.com"
 google-analytics = "UA-113141331-1"
+git-repository-url = "https://github.com/mapkts/keynote"
+default-theme = "rust"
+mathjax-support = true
 
 [output.html.print]
 enable = true

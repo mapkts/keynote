@@ -5,12 +5,24 @@ Just an exmaple chapter. Nothing serious.
 ## Section 1
 Hello Rust!
 
-```rust, editable
+```rust
 fn main() {
     let x = "Hello, Rust!";
 
     println!("{}", x);
 }
+```
+
+\\[ \mu = \frac{1}{N} \sum_{i=0} x_i \\]
+
+```go
+package main
+
+import (
+    "fmt"
+)
+
+func main() {}
 ```
 
 ## Section 2
