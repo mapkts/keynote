@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="sidebar-visible no-js rust">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -47,12 +47,15 @@
         
 
         
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -78,7 +81,7 @@
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
             html.classList.remove('no-js')
-            html.classList.remove('light')
+            html.classList.remove('rust')
             html.classList.add(theme);
             html.classList.add('js');
         </script>
@@ -97,7 +100,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点除法运算有必要手动优化吗？</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -116,8 +119,8 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
@@ -137,6 +140,10 @@
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/mapkts/keynote" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
                         
                     </div>
                 </div>
@@ -169,15 +176,103 @@
 <p>Just an exmaple chapter. Nothing serious.</p>
 <h2 id="section-1"><a class="header" href="#section-1">Section 1</a></h2>
 <p>Hello Rust!</p>
-<pre><pre class="playground"><code class="language-rust editable">fn main() {
+<pre><pre class="playground"><code class="language-rust">fn main() {
     let x = &quot;Hello, Rust!&quot;;
 
     println!(&quot;{}&quot;, x);
 }
 </code></pre></pre>
+<p>\[ \mu = \frac{1}{N} \sum_{i=0} x_i \]</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {}
+</code></pre>
 <h2 id="section-2"><a class="header" href="#section-2">Section 2</a></h2>
 <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
 <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+<h1 id="浮点除法运算有必要手动优化吗"><a class="header" href="#浮点除法运算有必要手动优化吗">浮点除法运算有必要手动优化吗？</a></h1>
+<blockquote>
+<p>在计算密集型的应用中，手动优化除法是有一定必要的，因为编译器可能不如你想象的那么聪明。</p>
+</blockquote>
+<p>最近在跟着PBRT这本书写一个离线渲染器，在光线和实体对象（如球体）求交时，需要频繁将一个向量<code>vector</code>除以其长度<code>magnitude</code>得出单位向量<code>unit vector</code>。大家都知道在现代CPU中除法运算一般都比乘法运算慢很多，PBRT这本书上也推荐在将一个向量除以一个标量<code>scalar</code>时，先求出被除标量的倒数<code>recipocal</code>，然后再使该向量的每一元素都乘以这个倒数, 得出单位向量。其实现代编译器，特别是像Rustc这种用llvm做后端的编译器，是特别擅长优化用户代码的, 完全有可能会自动帮我们优化除法运算。为避免不必要的过度优化<code>premature optimization</code>，我们可以写两个测试，一个是手动优化版本的，一个是未优化版本的，通过测试两者的性能表现，我们可以确定编译器是优化除法运算。</p>
+<h2 id="性能测试"><a class="header" href="#性能测试">性能测试</a></h2>
+<p>首先我们先将向量和向量和标量的除法运算定义好，这里我们选择三维向量用于测试。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Copy, Clone)]
+pub struct V1(pub f32, pub f32, pub f32);
+
+// 手动优化的实现
+impl core::ops::Div&lt;f32&gt; for V1 {
+    type Output = Self;
+
+    #[inline]
+    fn div(self, rhs: f32) -&gt; Self {
+        let inv = 1. / rhs;
+        Self(self.0 * inv, self.1 * inv, self.2 * inv)
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct V2(pub f32, pub f32, pub f32);
+
+// 未优化的实现
+impl core::ops::Div&lt;f32&gt; for V2 {
+    type Output = Self;
+
+    #[inline]
+    fn div(self, rhs: f32) -&gt; Self {
+        Self(self.0 / rhs, self.1 / rhs, self.2 / rhs)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>下面给出的是测试用例，为简化代码我们直接使用Rust官方的bench模块。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span>#![feature(test)]
+
+<span class="boring">fn main() {
+</span>extern crate test;
+
+#[cfg(test)]
+mod bench {
+    use super::*;
+    use test::Bencher;
+
+    #[bench]
+    fn test_cached_div(bencher: &amp;mut Bencher) {
+       let mut x = V1(f32::MAX, f32::MAX, f32::MAX);
+       bencher.iter(|| {
+           for _ in 0..10000 {
+               x = x / 0.99;
+           }
+       });
+    }
+
+    #[bench]
+    fn test_direct_div(bencher: &amp;mut Bencher) {
+       let mut x = V2(f32::MAX, f32::MAX, f32::MAX);
+       bencher.iter(|| {
+           for _ in 0..10000 {
+               x = x / 0.99;
+           }
+       });
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>在我的机器上基准测试结果如下：</p>
+<pre><code>test bench::test_cached_div ... bench:      10,293 ns/iter (+/- 66)
+test bench::test_direct_div ... bench:      31,562 ns/iter (+/- 263)
+</code></pre>
+<p>在循环一万次的情形下，手动优化的除法（将三个除法替换成一个除法和三个乘法）所需的时间是直接进行的除法（直接进行三次除法）所需时间的1 / 3，说明编译器是不会进行相应优化的。</p>
+<p>这时候你可能会问，为什么?</p>
 
                     </main>
 
@@ -254,7 +349,9 @@
         
         <script type="text/javascript">
         window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
         });
         </script>
         
