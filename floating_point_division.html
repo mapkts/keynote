@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js rust">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>浮点除法运算有必要手动优化吗？ - 一本不成器的笔记罢了</title>
+        <title>浮点数除法优化 - 一本不成器的笔记罢了</title>
         
         
 
@@ -53,7 +53,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -79,7 +79,7 @@
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
             html.classList.remove('no-js')
-            html.classList.remove('rust')
+            html.classList.remove('light')
             html.classList.add(theme);
             html.classList.add('js');
         </script>
@@ -98,7 +98,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html" class="active"><strong aria-hidden="true">2.</strong> 浮点除法运算有必要手动优化吗？</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html" class="active"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -117,8 +117,8 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
@@ -170,25 +170,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="浮点除法运算有必要手动优化吗"><a class="header" href="#浮点除法运算有必要手动优化吗">浮点除法运算有必要手动优化吗？</a></h1>
+                        <h1 id="浮点数除法优化"><a class="header" href="#浮点数除法优化">浮点数除法优化</a></h1>
 <blockquote>
-<p>在计算密集型的应用中，手动优化除法是有一定必要的，因为编译器可能不如你想象的那么聪明。</p>
+<p>在计算密集型的应用中，优化除法运算是有一定必要的，因为编译器可能不如你想象的那么聪明</p>
 </blockquote>
-<p>最近在跟着PBRT这本书写一个离线渲染器，在光线和实体对象（如球体）求交时，需要频繁将一个向量<code>vector</code>除以其长度<code>magnitude</code>得出单位向量<code>unit vector</code>。大家都知道在现代CPU中除法运算一般都比乘法运算慢很多，PBRT这本书上也推荐在将一个向量除以一个标量<code>scalar</code>时，先求出被除标量的倒数<code>recipocal</code>，然后再使该向量的每一元素都乘以这个倒数, 得出单位向量。其实现代编译器，特别是像Rustc这种用llvm做后端的编译器，是特别擅长优化用户代码的, 完全有可能会自动帮我们优化除法运算。为避免不必要的过度优化<code>premature optimization</code>，我们可以写两个测试，一个是手动优化版本的，一个是未优化版本的，通过测试两者的性能表现，我们可以确定编译器是优化除法运算。</p>
-<h2 id="性能测试"><a class="header" href="#性能测试">性能测试</a></h2>
-<p>首先我们先将向量和向量和标量的除法运算定义好，这里我们选择三维向量用于测试。</p>
+<p>最近在跟着<a href="https://www.pbr-book.org/3ed-2018/contents"><code>PBRT</code></a>这本书写一个简单的离线物理渲染器，在对光线和实体对象（如球体）求交时，需要频繁地做除法运算将一个空间向量单位化。大家都知道，CPU的除法指令要比乘法指令慢得多，比如对AMD最新的Zen 3架构CPU（Ryzen 5000系列）的测试显示<sup class="footnote-reference"><a href="#1">1</a></sup>，一次x87浮点除法运算需要的时钟周期大约是乘法运算所需时钟周期的6倍（见下图）。</p>
+<table><thead><tr><th align="center">x87浮点指令</th><th align="center">延迟</th><th align="center">1 / 吞吐量</th></tr></thead><tbody>
+<tr><td align="center">FMUL</td><td align="center">6-7</td><td align="center">1</td></tr>
+<tr><td align="center">FDIV</td><td align="center">15</td><td align="center">6</td></tr>
+</tbody></table>
+<p>在实现向量对标量的除法时，书上建议先求出被除标量的倒数，然后再将向量的每一元素都乘以这个倒数，来得出单位向量。问题来了，对于这种简单而直接的优化方式，现代编译器不应该会自动优化吗？这种手动优化是否有必要呢？</p>
+<p>为避免不必要的过度优化，我们可以写两个基准测试对比手动优化版和无修改版的性能表现，来确定编译器是否会帮我们做相应优化。</p>
+<h2 id="测试过程"><a class="header" href="#测试过程">测试过程</a></h2>
+<p>首先我们按上面所说的方法来实现两种不同的向量对标量的除法运算，这里我们选择三维向量用于测试。</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>#[derive(Copy, Clone)]
 pub struct V1(pub f32, pub f32, pub f32);
 
-// 手动优化的实现
+// 求倒后乘法
 impl core::ops::Div&lt;f32&gt; for V1 {
     type Output = Self;
 
     #[inline]
     fn div(self, rhs: f32) -&gt; Self {
+        // 将三次除法替换成一次除法和三次乘法
         let inv = 1. / rhs;
         Self(self.0 * inv, self.1 * inv, self.2 * inv)
     }
@@ -197,22 +204,22 @@ impl core::ops::Div&lt;f32&gt; for V1 {
 #[derive(Copy, Clone)]
 pub struct V2(pub f32, pub f32, pub f32);
 
-// 未优化的实现
+// 直接相除法
 impl core::ops::Div&lt;f32&gt; for V2 {
     type Output = Self;
 
     #[inline]
     fn div(self, rhs: f32) -&gt; Self {
+        // 直接进行三次除法
         Self(self.0 / rhs, self.1 / rhs, self.2 / rhs)
     }
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>下面给出的是测试用例，为简化代码我们直接使用Rust官方的bench模块。</p>
+<p>下面给出的是测试用例，为简化代码我们这里直接使用Rust的bench test模块。为防止出现下溢或上溢的情况，这里选择在bencher外实例化一个向量，向量的每个元素的初始值都是<code>f32::MAX</code>,然后在bencher里对向量做一万次标量除法，每次除以1.01。</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span>#![feature(test)]
-
 <span class="boring">fn main() {
 </span>extern crate test;
 
@@ -226,7 +233,7 @@ mod bench {
        let mut x = V1(f32::MAX, f32::MAX, f32::MAX);
        bencher.iter(|| {
            for _ in 0..10000 {
-               x = x / 0.99;
+               x = x / 1.01;
            }
        });
     }
@@ -236,19 +243,26 @@ mod bench {
        let mut x = V2(f32::MAX, f32::MAX, f32::MAX);
        bencher.iter(|| {
            for _ in 0..10000 {
-               x = x / 0.99;
+               x = x / 1.01;
            }
        });
     }
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>在我的机器上基准测试结果如下：</p>
-<pre><code>test bench::test_cached_div ... bench:      10,293 ns/iter (+/- 66)
-test bench::test_direct_div ... bench:      31,562 ns/iter (+/- 263)
+<p>在我的笔记本（CPU型号为AMD Ryzen 7 4800U）上运行的测试结果如下：</p>
+<pre><code>test bench::test_cached_div ... bench:      15,020 ns/iter (+/- 963)
+test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 </code></pre>
-<p>在循环一万次的情形下，手动优化的除法（将三个除法替换成一个除法和三个乘法）所需的时间是直接进行的除法（直接进行三次除法）所需时间的1 / 3，说明编译器是不会进行相应优化的。</p>
-<p>这时候你可能会问，为什么?</p>
+<p>从测试结果我们可以看到，直接除法比优化的除法慢将近3倍，说明编译器并没有对除法运算做优化。</p>
+<h2 id="原因分析"><a class="header" href="#原因分析">原因分析</a></h2>
+<p>事实上，编译器之所以没有进行上面所说的除法优化，是由于这种优化很可能会破坏程序的正确性（相对于性能而言，正确性是编译器在优化代码时首先要保证的）。IEEE浮点数标准要求，对于所有的\( x \), 有 </p>
+<p>\[ \frac{1}{x} \cdot x = 1 \]</p>
+<p>由于浮点数求倒数有可能发生精度丢失，我们如果将计算的\( \frac{1}{x} \)保存起来再乘\( x \)的话，并不能保证结果还是1。编译器为了符合IEEE浮点数标准的要求，被限制执行这类的转换。也就是说，如果我们要打破这一保证以换取更高性能表现的话，需要自己手动做这方面的转换。</p>
+<h3 id="参考资料"><a class="header" href="#参考资料">参考资料</a></h3>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://agner.org/optimize/instruction_tables.pdf">Agner Fog指令测试表</a></p>
+</div>
 
                     </main>
 
