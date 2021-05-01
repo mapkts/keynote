@@ -10,15 +10,15 @@ description = "一本不成器的笔记罢了"
 cname = "keynote.mapkts.com"
 google-analytics = "UA-113141331-1"
 git-repository-url = "https://github.com/mapkts/keynote"
-default-theme = "rust"
+default-theme = "light"
 mathjax-support = true
 
 [output.html.print]
 enable = true
 
 [output.html.fold]
-enable = false
-level = 0
+enable = true
+level = 1
 
 [output.html.playground]
 editable = true
