@@ -240,7 +240,7 @@ impl core::ops::Div&lt;f32&gt; for V2 {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>下面给出的是测试用例，为简化代码我们这里直接使用Rust的bench test模块。为防止出现下溢或上溢的情况，这里选择在bencher外实例化一个向量，向量的每个元素的初始值都是<code>f32::MAX</code>,然后在bencher里对向量做一万次标量除法，每次除以1.01。</p>
+<p>下面给出的是测试用例，为简化代码我们这里直接使用Rust的bench test模块。为防止出现下溢或上溢的情况，这里选择在bencher外初始化一个向量，向量的每个元素的初始值都设为<code>f32::MAX</code>,然后每次循环都除以一个非常小的增量1.01。</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span>#![feature(test)]
