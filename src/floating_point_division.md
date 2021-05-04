@@ -85,7 +85,7 @@ mod bench {
 
 在我的笔记本（CPU型号为AMD Ryzen 7 4800U）上运行的测试结果如下：
 
-```
+```bash
 test bench::test_cached_div ... bench:      15,020 ns/iter (+/- 963)
 test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 ```
@@ -94,7 +94,7 @@ test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 
 ## 原因分析
 
-事实上，编译器之所以没有进行上面所说的除法优化，是由于这种优化很可能会破坏程序的正确性（相对于性能而言，正确性是编译器在优化代码时首先要保证的）。IEEE浮点数标准要求，对于所有的\\( x \\), 有 
+事实上，编译器之所以没有进行上面所说的除法优化，是由于这种优化很可能会破坏程序的正确性（相对于性能而言，正确性是编译器在优化代码时首先要保证的）。IEEE浮点数标准要求，对于所有的\\( x \\), 有
 
 \\[ \frac{1}{x} \cdot x = 1 \\]
 
@@ -103,4 +103,3 @@ test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 ### 参考资料
 
 [^1]: [Agner Fog指令测试表](https://agner.org/optimize/instruction_tables.pdf)
-
