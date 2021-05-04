@@ -275,12 +275,12 @@ mod bench {
 <span class="boring">}
 </span></code></pre></pre>
 <p>在我的笔记本（CPU型号为AMD Ryzen 7 4800U）上运行的测试结果如下：</p>
-<pre><code>test bench::test_cached_div ... bench:      15,020 ns/iter (+/- 963)
+<pre><code class="language-bash">test bench::test_cached_div ... bench:      15,020 ns/iter (+/- 963)
 test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 </code></pre>
 <p>从测试结果我们可以看到，直接除法比优化的除法慢将近3倍，说明编译器并没有对除法运算做优化。</p>
 <h2 id="原因分析"><a class="header" href="#原因分析">原因分析</a></h2>
-<p>事实上，编译器之所以没有进行上面所说的除法优化，是由于这种优化很可能会破坏程序的正确性（相对于性能而言，正确性是编译器在优化代码时首先要保证的）。IEEE浮点数标准要求，对于所有的\( x \), 有 </p>
+<p>事实上，编译器之所以没有进行上面所说的除法优化，是由于这种优化很可能会破坏程序的正确性（相对于性能而言，正确性是编译器在优化代码时首先要保证的）。IEEE浮点数标准要求，对于所有的\( x \), 有</p>
 <p>\[ \frac{1}{x} \cdot x = 1 \]</p>
 <p>由于浮点数求倒数有可能发生精度丢失，我们如果将计算的\( \frac{1}{x} \)保存起来再乘\( x \)的话，并不能保证结果还是1。编译器为了符合IEEE浮点数标准的要求，被限制执行这类的转换。也就是说，如果我们要打破这一保证以换取更高性能表现的话，需要自己手动做这方面的转换。</p>
 <h3 id="参考资料"><a class="header" href="#参考资料">参考资料</a></h3>
