@@ -6,3 +6,4 @@
     - [RAII与资源管理](./raii_and_resource_management.md)
     - [零成本抽象](./zero_cost_abstration.md)
     - [所有权与借用](./ownership_and_borrowing.md)
+    - [Result与Panic](./result_or_panic.md)
