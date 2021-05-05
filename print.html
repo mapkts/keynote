@@ -100,7 +100,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">4.1.</strong> HTTP协议</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -437,6 +437,27 @@ fn m3() {
 <li><strong>网络层</strong>（Internet Layer）：负责路由以及将传输层的报文封装成IP报文发送给目标设备。</li>
 <li><strong>链路层</strong>（Data Link Layer）：为网络层提供跨网络的数据传输服务。</li>
 </ul>
+<h2 id="术语表"><a class="header" href="#术语表">术语表</a></h2>
+<p><strong>MAC</strong>：媒体访问控制地址（Media Access Control Address），用于在网络中唯一标识一个网卡。</p>
+<h1 id="http协议"><a class="header" href="#http协议">HTTP协议</a></h1>
+<p><strong>HTTP</strong>是⼀个专门在<strong>两点</strong>之间<strong>传输</strong>⽂字、图⽚、⾳频、视频等<strong>超⽂本数据</strong>的<strong>约定和规范</strong>。</p>
+<h2 id="常见的状态码"><a class="header" href="#常见的状态码">常见的状态码</a></h2>
+<table><thead><tr><th>状态码</th><th align="center">类别</th><th>描述</th></tr></thead><tbody>
+<tr><td>1xx</td><td align="center">info</td><td>提示信息，表示目前处于中间状态</td></tr>
+<tr><td>200 OK</td><td align="center">success</td><td>表示一切正常，返回的响应头会有body数据(HEAD请求除外)</td></tr>
+<tr><td>204 No Content</td><td align="center">success</td><td>和200 OK基本相同，但响应头没有body数据</td></tr>
+<tr><td>206 Partial Content</td><td align="center">success</td><td>用于分块下载和断点续传，表示返回的body数据只是一部分</td></tr>
+<tr><td>301 Moved Permanently</td><td align="center">redirect</td><td>表示永久重定向，说明请求的资源不存在了，需要改用新的URL再次访问</td></tr>
+<tr><td>302 Found</td><td align="center">redirect</td><td>表示临时重定向，说明请求的资源还在，但暂时需要用另一个URL访问</td></tr>
+<tr><td>304 Not Modified</td><td align="center">redirect</td><td>表示缓存重定向，表示资源未修改，重定向已存在的缓冲⽂件，用于缓存控制</td></tr>
+<tr><td>400 Bad Request</td><td align="center">client error</td><td>表示客户端请求的报⽂有错误，但只是个笼统的错误</td></tr>
+<tr><td>403 Forbidden</td><td align="center">client error</td><td>表示服务器禁⽌访问资源，并不是客户端的请求出错</td></tr>
+<tr><td>404 Not Found</td><td align="center">client error</td><td>表示请求的资源在服务器上不存在或未找到</td></tr>
+<tr><td>500 Internal Server Error</td><td align="center">server error</td><td>和400类似，是一个笼统的错误码</td></tr>
+<tr><td>501 Not Implemented</td><td align="center">server error</td><td>表示客户端请求的功能还不⽀持</td></tr>
+<tr><td>502 Bad Gateway</td><td align="center">server error</td><td>网关/代理服务器返回的错误码，表示自身正常，但访问后端服务器发生了错误</td></tr>
+<tr><td>503 Service Unavailable</td><td align="center">server error</td><td>表示服务器当前很忙，暂时⽆法响应服务器</td></tr>
+</tbody></table>
 
                     </main>
 
