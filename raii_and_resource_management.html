@@ -98,7 +98,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="raii_and_resource_management.html" class="active"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="raii_and_resource_management.html" class="active"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -215,7 +215,7 @@ fn main() {
 <p>相对的，对于GC语言来说，为了保证资源管理的异常安全，通常的办法是提供一个不管是否发生异常都会执行的语句，来确保资源在出现异常的情况下也能被正确地释放，比如Java中的finally语句和Golang中的defer语句。以下是一个在Java中用finally来释放socket的例子：</p>
 <pre><code class="language-java">// socket.java
 
-void foo() {
+void main() {
     Socket socket;
     try {
         socket = new Socket();
@@ -234,7 +234,7 @@ void foo() {
 <li>标准库里<a href="https://doc.rust-lang.org/nightly/std/fs/struct.File.html"><code>File</code></a>属于第三类资源，由于实现了<code>Drop</code>特性，当栈上的owner离开scope时，文件的句柄（fd/handle）和锁（如果有）也会被关闭掉。</li>
 </ul>
 <p>也就是说，只要合理地实现<code>Drop</code>特性（大部分是lib作者的工作），编译器就会在编译期间自动插入相应的代码来实现二、三类资源的自动释放，避免资源泄漏问题，做到<strong>Write once, and off you go</strong>.</p>
-<p>另外需要注意的一点，资源的释放不一定要在一个函数作用域结束之后（亦即栈帧被销毁时）才被释放，在Rust中有多种方法可以提前结束一个资源的生命周期：</p>
+<p>另外需要注意的一点，资源的释放不一定要在一个函数作用域结束之后（栈帧被销毁时）才被释放，在Rust中有多种方法可以提前结束一个资源的生命周期：</p>
 <pre><pre class="playground"><code class="language-rust">// drop.rs
 
 fn main() {

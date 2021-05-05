@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Result与Panic - 一本不成器的笔记罢了</title>
+        <title>TCP/IP协议栈 - 一本不成器的笔记罢了</title>
         
         
 
@@ -98,7 +98,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item expanded "><a href="result_or_panic.html" class="active"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html" class="active"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -170,23 +170,25 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="result与panic"><a class="header" href="#result与panic">Result与Panic</a></h1>
-<p><a href="http://joeduffyblog.com/2016/02/07/the-error-model/">http://joeduffyblog.com/2016/02/07/the-error-model/</a></p>
+                        <h1 id="tcpip协议栈"><a class="header" href="#tcpip协议栈">TCP/IP协议栈</a></h1>
+<p><strong>TCP/IP</strong>网络协议并不只是TCP、IP，它是<strong>一系列通用的网络协议</strong>的总称，这些网络协议一般自顶向下可划分为以下4层（也有其他划分方法）：</p>
+<ul>
+<li><strong>应用层</strong>（Applicaiton Layer）：负责为用户提供应用功能，不关心数据如何传输。应用层工作在用户态，而其他层都工作在内核态。</li>
+<li><strong>传输层</strong>（Transport Layer）：为应用层提供网络支持，负责对报文进行重组和分组，并以TCP或UDP协议格式封装报文。</li>
+<li><strong>网络层</strong>（Internet Layer）：负责路由以及将传输层的报文封装成IP报文发送给目标设备。</li>
+<li><strong>链路层</strong>（Data Link Layer）：为网络层提供跨网络的数据传输服务。</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="ownership_and_borrowing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="result_or_panic.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
-                        
-                            <a rel="next" href="tcp_ip_prototols.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -196,15 +198,11 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="ownership_and_borrowing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="result_or_panic.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
-                
-                    <a rel="next" href="tcp_ip_prototols.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
                 
             </nav>
 
