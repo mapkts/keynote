@@ -58,7 +58,7 @@ fn main() {
 ```java
 // socket.java
 
-void foo() {
+void main() {
     Socket socket;
     try {
         socket = new Socket();
@@ -82,7 +82,7 @@ void foo() {
 
 也就是说，只要合理地实现`Drop`特性（大部分是lib作者的工作），编译器就会在编译期间自动插入相应的代码来实现二、三类资源的自动释放，避免资源泄漏问题，做到**Write once, and off you go**.
 
-另外需要注意的一点，资源的释放不一定要在一个函数作用域结束之后（亦即栈帧被销毁时）才被释放，在Rust中有多种方法可以提前结束一个资源的生命周期：
+另外需要注意的一点，资源的释放不一定要在一个函数作用域结束之后（栈帧被销毁时）才被释放，在Rust中有多种方法可以提前结束一个资源的生命周期：
 
 [`Drop`]: https://doc.rust-lang.org/nightly/std/ops/trait.Drop.html
 [`Box`]: https://doc.rust-lang.org/nightly/std/ops/trait.Drop.html
