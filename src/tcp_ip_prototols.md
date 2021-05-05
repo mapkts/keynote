@@ -6,3 +6,7 @@
 - **传输层**（Transport Layer）：为应用层提供网络支持，负责对报文进行重组和分组，并以TCP或UDP协议格式封装报文。
 - **网络层**（Internet Layer）：负责路由以及将传输层的报文封装成IP报文发送给目标设备。
 - **链路层**（Data Link Layer）：为网络层提供跨网络的数据传输服务。
+
+## 术语表
+
+**MAC**：媒体访问控制地址（Media Access Control Address），用于在网络中唯一标识一个网卡。
