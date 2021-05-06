@@ -10,3 +10,5 @@
 ## 术语表
 
 **MAC**：媒体访问控制地址（Media Access Control Address），用于在网络中唯一标识一个网卡。
+
+**端口号**（Port）：用16bit来识别主机上的程序/服务的（传输层）标识。Linux上的`/etc/services`文件记录了端口号映射。
