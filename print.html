@@ -100,7 +100,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">4.1.</strong> HTTP协议</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">5.</strong> systemd</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><a href="rust_core_concepts.html"><strong aria-hidden="true">3.</strong> Rust核心概念</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">4.1.</strong> HTTP协议</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">5.</strong> systemd</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -287,6 +287,7 @@ test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://agner.org/optimize/instruction_tables.pdf">Agner Fog指令测试表</a></p>
 </div>
+<h1 id="rust核心概念"><a class="header" href="#rust核心概念">Rust核心概念</a></h1>
 <h1 id="raii与资源管理"><a class="header" href="#raii与资源管理">RAII与资源管理</a></h1>
 <p>如果要给计算机史上最糟糕的技术词汇命名弄一个排行榜的话，由C++之父创造的RAII<sup class="footnote-reference"><a href="#1">1</a></sup>肯定榜上有名。首先是发音问题，到底该念Ray? Rai? 还是R.A.I.I呢？没有人知道。其次，作为一种有关资源获取和释放的管理机制，其全称<strong>资源获取即初始化</strong>(Resource Acquisition is Initialization)只描述了RAII机制关于资源初始化的部分，而事实上更为关键的<strong>资源释放即析构</strong>(Resource Release is Destruction)却选择性地被忽略了，导致很多像我这样的小白刚接触的时候就被其高大上唬住了，不敢知其所以然。</p>
 <p>为了更好地理解RAII机制，我们先来聊聊什么是资源。资源是一个很宽泛的概念，在不同的语境下有不同的含义，我们上面提到的资源实际上是指操作系统提供给应用程序的内存、文件句柄、socket和锁等数量有限的东西，这里为方便理解我们从资源管理方式角度将其分为以下三类：</p>
@@ -613,8 +614,8 @@ WantedBy=multi-user.target
 <p>测试完成后，用以下命令彻底清除测试用的echo服务：</p>
 <pre><code class="language-bash">sudo systemctl disable echo
 sudo rm /usr/lib/systemd/system/echo.service
-systemctl daemon-reload
-systemctl reset-failed
+sudo systemctl daemon-reload
+sudo systemctl reset-failed
 </code></pre>
 <h3 id="参考资料-2"><a class="header" href="#参考资料-2">参考资料</a></h3>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
