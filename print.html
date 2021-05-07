@@ -100,7 +100,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">4.1.</strong> HTTP协议</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Rust核心概念</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">4.1.</strong> HTTP协议</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">5.</strong> systemd</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -459,6 +459,176 @@ fn m3() {
 <tr><td>502 Bad Gateway</td><td align="center">server error</td><td>网关/代理服务器返回的错误码，表示自身正常，但访问后端服务器发生了错误</td></tr>
 <tr><td>503 Service Unavailable</td><td align="center">server error</td><td>表示服务器当前很忙，暂时⽆法响应服务器</td></tr>
 </tbody></table>
+<h1 id="systemd"><a class="header" href="#systemd">systemd</a></h1>
+<p>systemd是一个Linux系统基础组件的集合，提供了一个系统和服务管理器，运行为PID 1并负责启动其它程序<sup class="footnote-reference"><a href="#1">1</a></sup>。systemd目前已成为大部分Linux发行版的标准配置，可用以下命令验证当前系统是否使用systemd：</p>
+<pre><code class="language-bash"># 第一行有systemd的话表示pid 1为systemd
+ps -A | grep systemd
+</code></pre>
+<h2 id="unit"><a class="header" href="#unit">Unit</a></h2>
+<p>systemd将系统资源统称为<strong>Unit</strong>，并划分为以下12种类型：</p>
+<table><thead><tr><th>UNIT TYPE</th><th>DESCRIPTION</th></tr></thead><tbody>
+<tr><td>service</td><td>系统服务</td></tr>
+<tr><td>target</td><td>多个unit构成的一个组</td></tr>
+<tr><td>device</td><td>硬件设备</td></tr>
+<tr><td>mount</td><td>文件系统的挂载点</td></tr>
+<tr><td>automount</td><td>自动挂载点</td></tr>
+<tr><td>path</td><td>文件路径</td></tr>
+<tr><td>scope</td><td>不是由systemd启动的外部进程</td></tr>
+<tr><td>slice</td><td>进程组</td></tr>
+<tr><td>snapshot</td><td>systemd快照</td></tr>
+<tr><td>socket</td><td>用于进程间通信的socket</td></tr>
+<tr><td>swap</td><td>swap文件</td></tr>
+<tr><td>timer</td><td>定时器</td></tr>
+</tbody></table>
+<p>使用<code>systemctl list-units</code>命令可查看正在运行的Unit（不带参数），每个Unit都以<code>.TYPE</code>结尾以标识其类型。常用的用法还有：</p>
+<pre><code class="language-bash"># 列出所有Unit
+systemctl list-units --all
+</code></pre>
+<pre><code class="language-bash"># 列出所有没有运行的Unit
+systemctl list-units --all --state=inactive
+</code></pre>
+<pre><code class="language-bash"># 列出所有加载失败的Unit
+systemctl list-units --failed
+</code></pre>
+<pre><code class="language-bash"># 列出正在运行的指定类型的Unit，这里指定类型为`service`
+systemctl list-units --type=service
+</code></pre>
+<p>使用<code>systemctl status</code>命令可查看系统状态（不带参数）和指定Unit的状态。</p>
+<pre><code class="language-bash"># 查看sshd服务的状态
+systemctl status sshd.service
+</code></pre>
+<p>使用systemctl命令时通常需要使用包括扩展名的单元全称（例如<code>sshd.service</code>），但在以下情形下可使用简写形式：</p>
+<ul>
+<li>如果无扩展名，systemctl默认扩展名为<code>.service</code>，例如<code>sshd</code>和<code>sshd.service</code>是等价的。</li>
+<li>挂载点会自动转化为相应的<code>.mount</code>单元，例如<code>/home</code>和<code>home.mount</code>是等价的。</li>
+<li>设备会自动转化为相应的<code>.device</code>单元，例如<code>/dev/sda2</code>和<code>dev-sda2.device</code>是等价的。</li>
+</ul>
+<h2 id="unit管理"><a class="header" href="#unit管理">Unit管理</a></h2>
+<p>以下的命令用于控制一个Unit的运行状态，注意这些命令都需要sudo权限：</p>
+<pre><code class="language-bash"># 启动一个服务
+sudo systemctl start redis.service
+
+# 停止一个服务
+sudo systemctl stop redis.service
+
+# 重启一个服务
+sudo systemctl restart redis.service
+
+# 杀死一个服务的所有进程，适用于stop命令无响应的情形
+sudo systemctl kill redis.service
+</code></pre>
+<h2 id="unit配置文件"><a class="header" href="#unit配置文件">Unit配置文件</a></h2>
+<p>systemd默认从<code>/etc/systemd/system/</code>目录读取Unit配置文件，里面大部分为符号链接，真正的配置文件存放在<code>/usr/lib/systemd/system/</code>目录下。</p>
+<p>可用<code>systemctl enable</code>和<code>systemctl disable</code>两个命令在上面两个目录之间创建、断开符号链接（直接用ln命令也Ok）：</p>
+<pre><code class="language-bash"># 创建符号链接
+sudo systemctl enable redis.service
+
+# 断开符号链接
+sudo systemctl disable redis.service
+</code></pre>
+<p><code>systemctl list-unit-files</code>命令可查看所有配置文件，<code>systemctl cat unit.service</code>命令可查看指定Unit的具体配置。</p>
+<p>如果修改了配置文件，需要让systemd重新加载配置文件，然后重新启动，否则修改不会生效。</p>
+<pre><code class="language-bash"># 这里假设修改了redis服务的配置
+sudo systemctl daemon-reload
+sudo systemctl restart redis.service
+</code></pre>
+<blockquote>
+<p>详细的配置文档可从<a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html">这里</a>找到。</p>
+</blockquote>
+<h2 id="一个简单的echo服务"><a class="header" href="#一个简单的echo服务">一个简单的echo服务</a></h2>
+<pre><code class="language-text">[Unit]
+Description=Testing-purposed echo service
+After=network.target sshd.service
+Wants=sshd.service
+Requires=network.target
+
+[Service]
+ExecStartPre=-/bin/bash -c &quot;echo start echo service&quot;
+ExecStartPre=-/bin/bash -c &quot;echo start echoing&quot;
+ExecStart=/bin/bash -c &quot;for (( i=1; i&lt;=5; i++ )) ; do echo 42 &amp;&amp; sleep 1s ; done&quot;
+ExecStartPost=-/bin/bash -c &quot;echo before or after 42&quot;
+ExecStop=-/bin/bash -c &quot;echo stop echo service&quot;
+ExecReload=/bin/bash -c &quot;for (( i=1; i&lt;=5; i++ )) ; do echo 42 &amp;&amp; sleep 1s ; done&quot;
+Type=idle
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>这里我们通过以上一个简单的echo服务来说明常见配置项的用法。我们可以看到，Unit配置文件分为三个区块：</p>
+<ul>
+<li><code>[Unit]</code>：定义不依赖于Unit类型的通用信息。</li>
+<li><code>[Service]</code>：定义如何启动该服务，不是service类型的Unit无该区块。</li>
+<li><code>[Install]</code>：定义如何安装这个配置文件，即怎样做到开机启动。</li>
+</ul>
+<p>每个字段的含义如下，注意所有Unit配置文件中的所有字段都是case-sensitive的：</p>
+<ul>
+<li><code>[Description]</code>：对当前服务的简单描述，这里定义的描述可通过<code>systemctl status unit</code>、<code>systemctl list-units</code>等命令看到</li>
+<li><code>[After]</code>：定义应该在哪些Unit之后启动，这里表示echo服务需要在<code>network.target</code>和<code>sshd.target</code>之后启动；相应的，有一个<code>Before</code>字段定义该Unit应该在哪些Unit之前启动</li>
+<li><code>[Wants]</code>：定义弱依赖关系，这里表示即使终端断开了，<code>echo</code>服务也会继续运行</li>
+<li><code>[Requires]</code>：定义强依赖关系，这里表示如果网络服务中断了，<code>echo</code>服务也必须退出</li>
+<li><code>[ExecStartPre]</code>：启动服务之前执行的命令；命令之前的<code>-</code>表示抑制错误，即即使发生错误，也不会影响其他命令的执行</li>
+<li><code>[ExecStart]</code>：启动服务时执行的命令。作为<code>Service</code>块中最关键的命令，该字段必须设置。</li>
+<li><code>[ExecStartPost]</code>：启动服务之后执行的命令</li>
+<li><code>[ExecReload]</code>：重启服务时执行的命令</li>
+<li><code>[ExecStop]</code>：停止服务时执行的命令</li>
+<li><code>[Type]</code>：定义启动类型，可以设置的值如下：
+<ul>
+<li><code>simple</code>（默认值）：ExecStart字段启动的进程为主进程</li>
+<li><code>forking</code>：ExecStart字段将以fork()方式启动，此时父进程将会退出，子进程将成为主进程</li>
+<li><code>oneshot</code>：类似于simple，但只执行一次，systemd会等待它执行完，才启动其他服务</li>
+<li><code>dbus</code>：类似于simple，但会等待收到D-Bus信号后启动</li>
+<li><code>notify</code>：类似于simple，启动结束后会发出通知信号，然后systemd再启动其他服务</li>
+<li><code>idle</code>：类似于simple，但是要等到其他任务都执行完，才会启动该服务。一种使用场合是为让该服务的输出，不与其他服务的输出相混合</li>
+</ul>
+</li>
+<li><code>[Restart]</code>：定义systemd重启该服务的方式，可以设置的值如下：
+<ul>
+<li><code>no</code>（默认值）：退出后不会重启</li>
+<li><code>on-success</code>：只有正常退出时（退出状态码为0），才会重启</li>
+<li><code>on-failure</code>：非正常退出时（退出状态码非0），包括被信号终止和超时，才会重启</li>
+<li><code>on-abnormal</code>：只有被信号终止和超时，才会重启</li>
+<li><code>on-abort</code>：只有在收到没有捕捉到的信号终止时，才会重启</li>
+<li><code>on-watchdog</code>：超时退出，才会重启</li>
+<li><code>always</code>：不管是什么退出原因，总是重启</li>
+</ul>
+</li>
+<li><code>[RestartSec]</code>：表示systemd重启该服务之前，需要等待多少秒</li>
+<li><code>[WantedBy]</code>：表示该服务所在的Target，在运行<code>systemctl enable echo.service</code>时，<code>echo.service</code>的符号链接会在<code>/etc/systemd/system/</code>下的<code>multi-user.target.wants</code>子目录中。常用的Target有两个：一个是<code>multi-user.target</code>，表示多用户命令行状态；另一个是<code>graphical.target</code>，表示图形用户状态，它依赖于<code>multi-user.target</code></li>
+</ul>
+<p>接下来我们将<code>echo</code>服务部署到机器上，看看是否能正常运行。</p>
+<p>首先，在<code>/usr/lib/systemd/system/</code>目录下创建一个<code>echo.service</code>文件：</p>
+<pre><code class="language-bash">sudo vi /usr/lib/systemd/system/echo.service
+</code></pre>
+<p>然后将上面的<code>echo.service</code>配置复制进去，保存退出后执行以下命令加载配置：</p>
+<pre><code class="language-bash">sudo systemctl enable echo
+</code></pre>
+<p>加载完成后，执行以下命令启动echo服务：</p>
+<pre><code class="language-bash">sudo systemctl start echo
+</code></pre>
+<p>然后使用<code>journalctl</code>命令查看实时的输出：</p>
+<pre><code class="language-bash">sudo journalctl -fu echo
+</code></pre>
+<p>测试完成后，用以下命令彻底清除测试用的echo服务：</p>
+<pre><code class="language-bash">sudo systemctl disable echo
+sudo rm /usr/lib/systemd/system/echo.service
+systemctl daemon-reload
+systemctl reset-failed
+</code></pre>
+<h3 id="参考资料-2"><a class="header" href="#参考资料-2">参考资料</a></h3>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="httpssystemd://wiki.archlinux.org/title/">https://wiki.archlinux.org/title/systemd</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html</a></p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html</a></p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html">https://www.freedesktop.org/software/systemd/man/systemd.unit.html</a></p>
+</div>
 
                     </main>
 
