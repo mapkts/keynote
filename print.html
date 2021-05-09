@@ -100,7 +100,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Just a Chapter</a></li><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">2.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><a href="rust_core_concepts.html"><strong aria-hidden="true">3.</strong> Rust核心概念</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">3.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">3.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">3.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">3.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">4.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">4.1.</strong> HTTP协议</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">5.</strong> systemd</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">1.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><a href="rust_core_concepts.html"><strong aria-hidden="true">2.</strong> Rust核心概念</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">2.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">2.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">2.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">2.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">3.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">3.1.</strong> HTTP协议</a></li><li class="chapter-item "><a href="transmission_control_protocol.html"><strong aria-hidden="true">3.2.</strong> TCP协议</a></li><li class="chapter-item "><a href="common_networking_related_commands.html"><strong aria-hidden="true">3.3.</strong> 和网络相关的常用命令</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">4.</strong> systemd</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -172,29 +172,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="chapter-1"><a class="header" href="#chapter-1">Chapter 1</a></h1>
-<p>Just an exmaple chapter. Nothing serious.</p>
-<h2 id="section-1"><a class="header" href="#section-1">Section 1</a></h2>
-<p>Hello Rust!</p>
-<pre><pre class="playground"><code class="language-rust">fn main() {
-    let x = &quot;Hello, Rust!&quot;;
-
-    println!(&quot;{}&quot;, x);
-}
-</code></pre></pre>
-<p>\[ \mu = \frac{1}{N} \sum_{i=0} x_i \]</p>
-<pre><code class="language-go">package main
-
-import (
-    &quot;fmt&quot;
-)
-
-func main() {}
-</code></pre>
-<h2 id="section-2"><a class="header" href="#section-2">Section 2</a></h2>
-<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-<h1 id="浮点数除法优化"><a class="header" href="#浮点数除法优化">浮点数除法优化</a></h1>
+                        <h1 id="浮点数除法优化"><a class="header" href="#浮点数除法优化">浮点数除法优化</a></h1>
 <blockquote>
 <p>在计算密集型的应用中，优化除法运算是有一定必要的，因为编译器可能不如你想象的那么聪明</p>
 </blockquote>
@@ -460,6 +438,17 @@ fn m3() {
 <tr><td>502 Bad Gateway</td><td align="center">server error</td><td>网关/代理服务器返回的错误码，表示自身正常，但访问后端服务器发生了错误</td></tr>
 <tr><td>503 Service Unavailable</td><td align="center">server error</td><td>表示服务器当前很忙，暂时⽆法响应服务器</td></tr>
 </tbody></table>
+<h1 id="tcp协议"><a class="header" href="#tcp协议">TCP协议</a></h1>
+<ul>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc793">RFC 793</a>定义了TCP的核心功能。</li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc1122">RFC 1122</a>对RFC 793的实现做了一些更新和补充。</li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc7414">RFC 7414</a>给出了TCP规范的路径图。</li>
+</ul>
+<h1 id="和网络相关的常用命令"><a class="header" href="#和网络相关的常用命令">和网络相关的常用命令</a></h1>
+<h2 id="ifconfig"><a class="header" href="#ifconfig">ifconfig</a></h2>
+<p><code>ifconfig</code>命令一般在引导时运行，以配置主机上的每个接口。用<code>ifconfig -a</code>可查看当前主机上所有的网络接口：</p>
+<h2 id="netstat"><a class="header" href="#netstat">netstat</a></h2>
+<p><code>netstat -i</code>命令可打印系统上的接口信息。</p>
 <h1 id="systemd"><a class="header" href="#systemd">systemd</a></h1>
 <p>systemd是一个Linux系统基础组件的集合，提供了一个系统和服务管理器，运行为PID 1并负责启动其它程序<sup class="footnote-reference"><a href="#1">1</a></sup>。systemd目前已成为大部分Linux发行版的标准配置，可用以下命令验证当前系统是否使用systemd：</p>
 <pre><code class="language-bash"># 第一行有systemd的话表示pid 1为systemd
