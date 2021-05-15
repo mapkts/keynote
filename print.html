@@ -100,7 +100,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">1.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><a href="rust_core_concepts.html"><strong aria-hidden="true">2.</strong> Rust核心概念</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">2.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">2.2.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">2.3.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">2.4.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">3.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">3.1.</strong> HTTP协议</a></li><li class="chapter-item "><a href="transmission_control_protocol.html"><strong aria-hidden="true">3.2.</strong> TCP协议</a></li><li class="chapter-item "><a href="common_networking_related_commands.html"><strong aria-hidden="true">3.3.</strong> 和网络相关的常用命令</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">4.</strong> systemd</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="floating_point_division.html"><strong aria-hidden="true">1.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><a href="rust_core_concepts.html"><strong aria-hidden="true">2.</strong> Rust核心概念</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="raii_and_resource_management.html"><strong aria-hidden="true">2.1.</strong> RAII与资源管理</a></li><li class="chapter-item "><a href="rust_core_concepts/static_and_dynamic_dispatch.html"><strong aria-hidden="true">2.2.</strong> 静态和动态分派</a></li><li class="chapter-item "><a href="zero_cost_abstration.html"><strong aria-hidden="true">2.3.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="ownership_and_borrowing.html"><strong aria-hidden="true">2.4.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="result_or_panic.html"><strong aria-hidden="true">2.5.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="tcp_ip_prototols.html"><strong aria-hidden="true">3.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="hypertext_transfer_protocol.html"><strong aria-hidden="true">3.1.</strong> HTTP协议</a></li><li class="chapter-item "><a href="transmission_control_protocol.html"><strong aria-hidden="true">3.2.</strong> TCP协议</a></li><li class="chapter-item "><a href="common_networking_related_commands.html"><strong aria-hidden="true">3.3.</strong> 和网络相关的常用命令</a></li></ol></li><li class="chapter-item expanded "><a href="systemd.html"><strong aria-hidden="true">4.</strong> systemd</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -145,13 +145,15 @@
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+
                     </div>
                 </div>
 
                 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -265,8 +267,8 @@ test bench::test_direct_div ... bench:      47,348 ns/iter (+/- 578)
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://agner.org/optimize/instruction_tables.pdf">Agner Fog指令测试表</a></p>
 </div>
-<h1 id="rust核心概念"><a class="header" href="#rust核心概念">Rust核心概念</a></h1>
-<h1 id="raii与资源管理"><a class="header" href="#raii与资源管理">RAII与资源管理</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="rust核心概念"><a class="header" href="#rust核心概念">Rust核心概念</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="raii与资源管理"><a class="header" href="#raii与资源管理">RAII与资源管理</a></h1>
 <p>如果要给计算机史上最糟糕的技术词汇命名弄一个排行榜的话，由C++之父创造的RAII<sup class="footnote-reference"><a href="#1">1</a></sup>肯定榜上有名。首先是发音问题，到底该念Ray? Rai? 还是R.A.I.I呢？没有人知道。其次，作为一种有关资源获取和释放的管理机制，其全称<strong>资源获取即初始化</strong>(Resource Acquisition is Initialization)只描述了RAII机制关于资源初始化的部分，而事实上更为关键的<strong>资源释放即析构</strong>(Resource Release is Destruction)却选择性地被忽略了，导致很多像我这样的小白刚接触的时候就被其高大上唬住了，不敢知其所以然。</p>
 <p>为了更好地理解RAII机制，我们先来聊聊什么是资源。资源是一个很宽泛的概念，在不同的语境下有不同的含义，我们上面提到的资源实际上是指操作系统提供给应用程序的内存、文件句柄、socket和锁等数量有限的东西，这里为方便理解我们从资源管理方式角度将其分为以下三类：</p>
 <p><img src="./img/system_resources.png" alt="system resources" /></p>
@@ -404,11 +406,196 @@ fn m3() {
 <div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
 <p><a href="https://rustmagazine.github.io/rust_magazine_2021/chapter_4/rust-to-system-essence-raii.html">https://rustmagazine.github.io/rust_magazine_2021/chapter_4/rust-to-system-essence-raii.html</a></p>
 </div>
-<h1 id="零成本抽象"><a class="header" href="#零成本抽象">零成本抽象</a></h1>
-<h1 id="所有权与借用"><a class="header" href="#所有权与借用">所有权与借用</a></h1>
-<h1 id="result与panic"><a class="header" href="#result与panic">Result与Panic</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="静态和动态分派"><a class="header" href="#静态和动态分派">静态和动态分派</a></h1>
+<p><strong>多态</strong>（polymorphism）这个概念相信各位编程狗都不陌生。当涉及多态调用时，需要有一种分派（dispatch）机制来确定实际运行哪个特定的实现（方法或函数）。分派机制有两种：编译时的<strong>静态分派</strong>（static dispatch）和运行时的<strong>动态分派</strong>（dynamic dispatch）。本文主要讨论这两种分派机制。</p>
+<blockquote>
+<p>按照国际惯例，本文给出的大部分例子都是可以通过点击代码块右上角的右三角▶运行的。</p>
+</blockquote>
+<h2 id="静态分派"><a class="header" href="#静态分派">静态分派</a></h2>
+<p>Rust的静态分派是通过编译期的<strong>单态化</strong>（monomorphization）来实现的， 请看下面例子：</p>
+<pre><code class="language-rust no_run noplayground">// 我们定义一个简单的`Show`特性
+// 然后分别为`u8`和`&amp;str`实现`Show`特性
+trait Show {
+   fn show(&amp;self);
+}
+
+impl Show for u8 {
+    fn show(&amp;self) {
+        print!(&quot;{}&quot;, self);
+    }
+}
+
+impl Show for &amp;str {
+    fn show(&amp;self) {
+        print!(&quot;{}&quot;, self);
+    }
+}
+</code></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
+</span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
+</span><span class="boring">trait Show {
+</span><span class="boring">   fn show(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for u8 {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for &amp;str {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>
+// 注意参数x的类型是一个可以在编译期确定的类型`T`
+fn show&lt;T: Show&gt;(x: T) {
+    x.show();
+}
+
+fn main() {
+    let x = &quot;Hello &quot;;
+    let y = 42u8;
+
+    show(x);
+    show(y);
+}
+</code></pre></pre>
+<p>在上面的例子中，编译器会在编译期分别为<code>u8</code>和<code>&amp;str</code>创建特化的<code>show()</code>函数，相当于生成了如下单态化的代码：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
+</span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
+</span><span class="boring">trait Show {
+</span><span class="boring">   fn show(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for u8 {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for &amp;str {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>
+fn show_str(x: &amp;str) {
+    x.show()
+}
+
+fn show_u8(x: u8) {
+    x.show()
+}
+
+fn main() {
+    let x = &quot;Hello &quot;;
+    let y = 42u8;
+
+    show_str(x);
+    show_u8(y);
+}
+</code></pre></pre>
+<p>单态化的优点是可以内联函数调用，实现运行时的高性能，但同时也导致了代码膨胀和编译时间的增加，这也是Rust编译速度为什么如此nice的原因之一（编译速度目前应该还没有能打的...）。</p>
+<h2 id="动态分派"><a class="header" href="#动态分派">动态分派</a></h2>
+<p>Rust的动态分派功能是通过trait对象<code>trait object</code>（如<code>Box&lt;dyn Show&gt;</code>或<code>&amp;dyn Show</code>）提供的。trait对象可以储存实现了该特性的的任意类型的值，但精确的类型只能在运行时才能确定。</p>
+<p>回到上面的例子，我们也可以用trait对象来实现运行时的动态调度：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
+</span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
+</span><span class="boring">trait Show {
+</span><span class="boring">   fn show(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for u8 {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for &amp;str {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}    
+</span>
+// 注意参数x的类型是一个`trait object`的引用，`dyn`的意思是需在运行时动态确定的
+fn show(x: &amp;dyn Show) {
+    x.show();
+}
+
+fn main() {
+    let x = &quot;Hello &quot;;
+    let y = 42u8;
+
+    show(&amp;x as &amp;dyn Show);
+    show(&amp;y as &amp;dyn Show);
+
+    // 或者更简单的写法：
+    // show(&amp;x);
+    // show(&amp;y);
+}
+</code></pre></pre>
+<p>使用trait对象的函数不会在编译期被单态化，而是通过在运行时调用较慢的虚函数来实现动态分派，这样的好处是有效地抑制了进行内联和相关优化的机会。读到这里大家应该都明白为什么大部分Rust代码都是用静态分派的，不明白的可以借此机会好好思考一下。</p>
+<!-- 值得提的一点是，将一个具体的类型转化为一个trait对象时，编译器不再具有该类型的特定知识，意味着你不能再调用非trait对象上的方法了，这种现象一般叫做类型擦除（type erasure）。 -->
+<!-- ```rust -->
+<!-- # // 我们定义一个简单的`Show`特性
+# // 然后分别为`u8`和`&str`实现`Show`特性
+# trait Show {
+#    fn show(&self);
+# }
+# 
+# impl Show for u8 {
+#     fn show(&self) {
+#         print!("{}", self);
+#     }
+# }
+# 
+# impl Show for &str {
+#     fn show(&self) {
+#         print!("{}", self);
+#     }
+# } -->
+<!-- fn show(x: &dyn Show) { -->
+<!--     x.show(); -->
+<!--     let _ = x.to_uppercase(); -->
+<!-- } -->
+<!-- fn main() { -->
+<!--     let x = "Hello "; -->
+<!--     show(&x); -->
+<!-- } -->
+<!-- ``` -->
+<!-- 在上面的例子中，调用`str`的`to_uppercase()`方法是非法的，因为编译器已经不知道`x`是`&str`了。 -->
+<p>你可以已经注意到，在上面动态分派的例子中，trait对象在传给函数的时候是以引用的形式传入的，这是因为trait对象大小是不确定的, 不能直接传入函数，因此加了一层indirection。<code>&amp;dyn Show</code>是一个16个字节大小的胖指针（fat pointer）, 前8个字节指向具体类型携带的数据，而后8个字节指向该具体类型对应的<code>vtable</code>。以下是<code>&amp;dyn Show</code>的vtable的表示：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct ShowVtable {
+    // 指向析构器的指针, 如果实现了`Drop`特性
+    destructor: fn(*mut ()),
+    // 数据的大小
+    size: usize,
+    // 数据的对齐要求
+    align: usize,
+    // 具体实现的函数指针
+    // 可能有多个，我们的`Show`特性只有一个方法
+    show: fn(*const ()),
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><img src="rust_core_concepts/../img/trait_object.png" alt="Trait Ojbect" /></p>
+<h2 id="参考资料-2"><a class="header" href="#参考资料-2">参考资料</a></h2>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://doc.rust-lang.org/1.30.0/book/first-edition/trait-objects.html#trait-objects">https://doc.rust-lang.org/1.30.0/book/first-edition/trait-objects.html#trait-objects</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a href="https://alschwalm.com/blog/static/2017/03/07/exploring-dynamic-dispatch-in-rust/">https://alschwalm.com/blog/static/2017/03/07/exploring-dynamic-dispatch-in-rust/</a></p>
+</div>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="零成本抽象"><a class="header" href="#零成本抽象">零成本抽象</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="所有权与借用"><a class="header" href="#所有权与借用">所有权与借用</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="result与panic"><a class="header" href="#result与panic">Result与Panic</a></h1>
 <p><a href="http://joeduffyblog.com/2016/02/07/the-error-model/">http://joeduffyblog.com/2016/02/07/the-error-model/</a></p>
-<h1 id="tcpip协议栈"><a class="header" href="#tcpip协议栈">TCP/IP协议栈</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="tcpip协议栈"><a class="header" href="#tcpip协议栈">TCP/IP协议栈</a></h1>
 <p><strong>TCP/IP</strong>网络协议并不只是TCP、IP，它是<strong>一系列通用的网络协议</strong>的总称，这些网络协议一般自顶向下可划分为以下4层（也有其他划分方法）：</p>
 <ul>
 <li><strong>应用层</strong>（Applicaiton Layer）：负责为用户提供应用功能，不关心数据如何传输。应用层工作在用户态，而其他层都工作在内核态。</li>
@@ -419,7 +606,7 @@ fn m3() {
 <h2 id="术语表"><a class="header" href="#术语表">术语表</a></h2>
 <p><strong>MAC</strong>：媒体访问控制地址（Media Access Control Address），用于在网络中唯一标识一个网卡。</p>
 <p><strong>端口号</strong>（Port）：用16bit来识别主机上的程序/服务的（传输层）标识。Linux上的<code>/etc/services</code>文件记录了端口号映射。</p>
-<h1 id="http协议"><a class="header" href="#http协议">HTTP协议</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="http协议"><a class="header" href="#http协议">HTTP协议</a></h1>
 <p><strong>HTTP</strong>是⼀个专门在<strong>两点</strong>之间<strong>传输</strong>⽂字、图⽚、⾳频、视频等<strong>超⽂本数据</strong>的<strong>约定和规范</strong>。</p>
 <h2 id="常见的状态码"><a class="header" href="#常见的状态码">常见的状态码</a></h2>
 <table><thead><tr><th>状态码</th><th align="center">类别</th><th>描述</th></tr></thead><tbody>
@@ -438,18 +625,14 @@ fn m3() {
 <tr><td>502 Bad Gateway</td><td align="center">server error</td><td>网关/代理服务器返回的错误码，表示自身正常，但访问后端服务器发生了错误</td></tr>
 <tr><td>503 Service Unavailable</td><td align="center">server error</td><td>表示服务器当前很忙，暂时⽆法响应服务器</td></tr>
 </tbody></table>
-<h1 id="tcp协议"><a class="header" href="#tcp协议">TCP协议</a></h1>
-<ul>
-<li><a href="https://datatracker.ietf.org/doc/html/rfc793">RFC 793</a>定义了TCP的核心功能。</li>
-<li><a href="https://datatracker.ietf.org/doc/html/rfc1122">RFC 1122</a>对RFC 793的实现做了一些更新和补充。</li>
-<li><a href="https://datatracker.ietf.org/doc/html/rfc7414">RFC 7414</a>给出了TCP规范的路径图。</li>
-</ul>
-<h1 id="和网络相关的常用命令"><a class="header" href="#和网络相关的常用命令">和网络相关的常用命令</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="tcp协议"><a class="header" href="#tcp协议">TCP协议</a></h1>
+<p>core: <a href="https://datatracker.ietf.org/doc/html/rfc793">RFC 793</a>, updates: <a href="https://datatracker.ietf.org/doc/html/rfc1122">RFC 1122</a>, roadmap: <a href="https://datatracker.ietf.org/doc/html/rfc7414">RFC 7414</a></p>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="和网络相关的常用命令"><a class="header" href="#和网络相关的常用命令">和网络相关的常用命令</a></h1>
 <h2 id="ifconfig"><a class="header" href="#ifconfig">ifconfig</a></h2>
 <p><code>ifconfig</code>命令一般在引导时运行，以配置主机上的每个接口。用<code>ifconfig -a</code>可查看当前主机上所有的网络接口：</p>
 <h2 id="netstat"><a class="header" href="#netstat">netstat</a></h2>
 <p><code>netstat -i</code>命令可打印系统上的接口信息。</p>
-<h1 id="systemd"><a class="header" href="#systemd">systemd</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="systemd"><a class="header" href="#systemd">systemd</a></h1>
 <p>systemd是一个Linux系统基础组件的集合，提供了一个系统和服务管理器，运行为PID 1并负责启动其它程序<sup class="footnote-reference"><a href="#1">1</a></sup>。systemd目前已成为大部分Linux发行版的标准配置，可用以下命令验证当前系统是否使用systemd：</p>
 <pre><code class="language-bash"># 第一行有systemd的话表示pid 1为systemd
 ps -A | grep systemd
@@ -606,7 +789,7 @@ sudo rm /usr/lib/systemd/system/echo.service
 sudo systemctl daemon-reload
 sudo systemctl reset-failed
 </code></pre>
-<h3 id="参考资料-2"><a class="header" href="#参考资料-2">参考资料</a></h3>
+<h3 id="参考资料-3"><a class="header" href="#参考资料-3">参考资料</a></h3>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="httpssystemd://wiki.archlinux.org/title/">https://wiki.archlinux.org/title/systemd</a></p>
 </div>

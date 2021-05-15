@@ -1,0 +1,451 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>静态和动态分派 - 一本不成器的笔记罢了</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="一本不成器的笔记罢了">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../floating_point_division.html"><strong aria-hidden="true">1.</strong> 浮点数除法优化</a></li><li class="chapter-item expanded "><a href="../rust_core_concepts.html"><strong aria-hidden="true">2.</strong> Rust核心概念</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../raii_and_resource_management.html"><strong aria-hidden="true">2.1.</strong> RAII与资源管理</a></li><li class="chapter-item expanded "><a href="../rust_core_concepts/static_and_dynamic_dispatch.html" class="active"><strong aria-hidden="true">2.2.</strong> 静态和动态分派</a></li><li class="chapter-item "><a href="../zero_cost_abstration.html"><strong aria-hidden="true">2.3.</strong> 零成本抽象</a></li><li class="chapter-item "><a href="../ownership_and_borrowing.html"><strong aria-hidden="true">2.4.</strong> 所有权与借用</a></li><li class="chapter-item "><a href="../result_or_panic.html"><strong aria-hidden="true">2.5.</strong> Result与Panic</a></li></ol></li><li class="chapter-item expanded "><a href="../tcp_ip_prototols.html"><strong aria-hidden="true">3.</strong> TCP/IP协议栈</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../hypertext_transfer_protocol.html"><strong aria-hidden="true">3.1.</strong> HTTP协议</a></li><li class="chapter-item "><a href="../transmission_control_protocol.html"><strong aria-hidden="true">3.2.</strong> TCP协议</a></li><li class="chapter-item "><a href="../common_networking_related_commands.html"><strong aria-hidden="true">3.3.</strong> 和网络相关的常用命令</a></li></ol></li><li class="chapter-item expanded "><a href="../systemd.html"><strong aria-hidden="true">4.</strong> systemd</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">一本不成器的笔记罢了</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/mapkts/keynote" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                        
+
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="静态和动态分派"><a class="header" href="#静态和动态分派">静态和动态分派</a></h1>
+<p><strong>多态</strong>（polymorphism）这个概念相信各位编程狗都不陌生。当涉及多态调用时，需要有一种分派（dispatch）机制来确定实际运行哪个特定的实现（方法或函数）。分派机制有两种：编译时的<strong>静态分派</strong>（static dispatch）和运行时的<strong>动态分派</strong>（dynamic dispatch）。本文主要讨论这两种分派机制。</p>
+<blockquote>
+<p>按照国际惯例，本文给出的大部分例子都是可以通过点击代码块右上角的右三角▶运行的。</p>
+</blockquote>
+<h2 id="静态分派"><a class="header" href="#静态分派">静态分派</a></h2>
+<p>Rust的静态分派是通过编译期的<strong>单态化</strong>（monomorphization）来实现的， 请看下面例子：</p>
+<pre><code class="language-rust no_run noplayground">// 我们定义一个简单的`Show`特性
+// 然后分别为`u8`和`&amp;str`实现`Show`特性
+trait Show {
+   fn show(&amp;self);
+}
+
+impl Show for u8 {
+    fn show(&amp;self) {
+        print!(&quot;{}&quot;, self);
+    }
+}
+
+impl Show for &amp;str {
+    fn show(&amp;self) {
+        print!(&quot;{}&quot;, self);
+    }
+}
+</code></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
+</span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
+</span><span class="boring">trait Show {
+</span><span class="boring">   fn show(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for u8 {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for &amp;str {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>
+// 注意参数x的类型是一个可以在编译期确定的类型`T`
+fn show&lt;T: Show&gt;(x: T) {
+    x.show();
+}
+
+fn main() {
+    let x = &quot;Hello &quot;;
+    let y = 42u8;
+
+    show(x);
+    show(y);
+}
+</code></pre></pre>
+<p>在上面的例子中，编译器会在编译期分别为<code>u8</code>和<code>&amp;str</code>创建特化的<code>show()</code>函数，相当于生成了如下单态化的代码：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
+</span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
+</span><span class="boring">trait Show {
+</span><span class="boring">   fn show(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for u8 {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for &amp;str {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>
+fn show_str(x: &amp;str) {
+    x.show()
+}
+
+fn show_u8(x: u8) {
+    x.show()
+}
+
+fn main() {
+    let x = &quot;Hello &quot;;
+    let y = 42u8;
+
+    show_str(x);
+    show_u8(y);
+}
+</code></pre></pre>
+<p>单态化的优点是可以内联函数调用，实现运行时的高性能，但同时也导致了代码膨胀和编译时间的增加，这也是Rust编译速度为什么如此nice的原因之一（编译速度目前应该还没有能打的...）。</p>
+<h2 id="动态分派"><a class="header" href="#动态分派">动态分派</a></h2>
+<p>Rust的动态分派功能是通过trait对象<code>trait object</code>（如<code>Box&lt;dyn Show&gt;</code>或<code>&amp;dyn Show</code>）提供的。trait对象可以储存实现了该特性的的任意类型的值，但精确的类型只能在运行时才能确定。</p>
+<p>回到上面的例子，我们也可以用trait对象来实现运行时的动态调度：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
+</span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
+</span><span class="boring">trait Show {
+</span><span class="boring">   fn show(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for u8 {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Show for &amp;str {
+</span><span class="boring">    fn show(&amp;self) {
+</span><span class="boring">        print!(&quot;{}&quot;, self);
+</span><span class="boring">    }
+</span><span class="boring">}    
+</span>
+// 注意参数x的类型是一个`trait object`的引用，`dyn`的意思是需在运行时动态确定的
+fn show(x: &amp;dyn Show) {
+    x.show();
+}
+
+fn main() {
+    let x = &quot;Hello &quot;;
+    let y = 42u8;
+
+    show(&amp;x as &amp;dyn Show);
+    show(&amp;y as &amp;dyn Show);
+
+    // 或者更简单的写法：
+    // show(&amp;x);
+    // show(&amp;y);
+}
+</code></pre></pre>
+<p>使用trait对象的函数不会在编译期被单态化，而是通过在运行时调用较慢的虚函数来实现动态分派，这样的好处是有效地抑制了进行内联和相关优化的机会。读到这里大家应该都明白为什么大部分Rust代码都是用静态分派的，不明白的可以借此机会好好思考一下。</p>
+<!-- 值得提的一点是，将一个具体的类型转化为一个trait对象时，编译器不再具有该类型的特定知识，意味着你不能再调用非trait对象上的方法了，这种现象一般叫做类型擦除（type erasure）。 -->
+<!-- ```rust -->
+<!-- # // 我们定义一个简单的`Show`特性
+# // 然后分别为`u8`和`&str`实现`Show`特性
+# trait Show {
+#    fn show(&self);
+# }
+# 
+# impl Show for u8 {
+#     fn show(&self) {
+#         print!("{}", self);
+#     }
+# }
+# 
+# impl Show for &str {
+#     fn show(&self) {
+#         print!("{}", self);
+#     }
+# } -->
+<!-- fn show(x: &dyn Show) { -->
+<!--     x.show(); -->
+<!--     let _ = x.to_uppercase(); -->
+<!-- } -->
+<!-- fn main() { -->
+<!--     let x = "Hello "; -->
+<!--     show(&x); -->
+<!-- } -->
+<!-- ``` -->
+<!-- 在上面的例子中，调用`str`的`to_uppercase()`方法是非法的，因为编译器已经不知道`x`是`&str`了。 -->
+<p>你可以已经注意到，在上面动态分派的例子中，trait对象在传给函数的时候是以引用的形式传入的，这是因为trait对象大小是不确定的, 不能直接传入函数，因此加了一层indirection。<code>&amp;dyn Show</code>是一个16个字节大小的胖指针（fat pointer）, 前8个字节指向具体类型携带的数据，而后8个字节指向该具体类型对应的<code>vtable</code>。以下是<code>&amp;dyn Show</code>的vtable的表示：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct ShowVtable {
+    // 指向析构器的指针, 如果实现了`Drop`特性
+    destructor: fn(*mut ()),
+    // 数据的大小
+    size: usize,
+    // 数据的对齐要求
+    align: usize,
+    // 具体实现的函数指针
+    // 可能有多个，我们的`Show`特性只有一个方法
+    show: fn(*const ()),
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><img src="../img/trait_object.png" alt="Trait Ojbect" /></p>
+<h2 id="参考资料"><a class="header" href="#参考资料">参考资料</a></h2>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://doc.rust-lang.org/1.30.0/book/first-edition/trait-objects.html#trait-objects">https://doc.rust-lang.org/1.30.0/book/first-edition/trait-objects.html#trait-objects</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a href="https://alschwalm.com/blog/static/2017/03/07/exploring-dynamic-dispatch-in-rust/">https://alschwalm.com/blog/static/2017/03/07/exploring-dynamic-dispatch-in-rust/</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../raii_and_resource_management.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../zero_cost_abstration.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../raii_and_resource_management.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../zero_cost_abstration.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-113141331-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+        <script src="../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
