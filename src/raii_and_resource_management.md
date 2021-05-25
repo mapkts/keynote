@@ -69,7 +69,7 @@ void main() {
 }
 ```
 
-可见对于GC语言来说，为了保证第三类资源的内存安全和异常安全，开发者需要在(1)特定的语句中(2)显式地释放资源，但是第二类资源却是不需要手动释放的，这样在两种资源处理方式上的割裂会导致即使开发者足够有经验，也可能写出内存泄漏代码，毕竟百密一疏，在所难免嘛。
+可见对于GC语言来说，为了保证第三类资源的内存安全和异常安全，开发者需要在(1)特定的语句中(2)显式地释放资源，但是第二类资源却是不需要手动释放的，这样在两种资源处理方式上的割裂会导致即使开发者足够有经验，也可能写出内存泄漏代码，正所谓百密一疏，在所难免。
 
 ## Rust中RAII的实现方式
 
@@ -80,7 +80,7 @@ void main() {
 - 智能指针[`Box`]属于第二类资源，由于实现了`Drop`特性，当栈上的owner离开scope时，owner所指向的堆上内存也会同时释放（这也是为什么称之为智能指针的原因）。
 - 标准库里[`File`]属于第三类资源，由于实现了`Drop`特性，当栈上的owner离开scope时，文件的句柄（fd/handle）和锁（如果有）也会被关闭掉。
 
-也就是说，只要合理地实现`Drop`特性（大部分是lib作者的工作），编译器就会在编译期间自动插入相应的代码来实现二、三类资源的自动释放，避免资源泄漏问题，做到**Write once, and off you go**.
+也就是说，只要合理地实现`Drop`特性[^8]（大部分是crate author的工作），编译器就会在编译期间自动插入相应的代码来实现二、三类资源的自动释放，避免资源泄漏问题，做到**Write once, and off you go**.
 
 另外需要注意的一点，资源的释放不一定要在一个函数作用域结束之后（栈帧被销毁时）才被释放，在Rust中有多种方法可以提前结束一个资源的生命周期：
 
@@ -141,8 +141,6 @@ fn m3() {
 
 个人认为主要是因为GC语言大多把对象分配在堆上，意味着没有像栈帧上的变量一样有一个清晰的scope和生命周期，无法把资源的释放逻辑和栈上对象绑定。同时，GC语言没有确定性析构的概念，GC什么时候回收堆上的对象完全是不确定的，也就意味着destructor什么时候被调用并不确定，这种不确定性对于一些系统资源（比如锁）来说是不能接受的。
 
-> 人生苦短，拥抱RAII。 --- Bjarne Stroustrup, God of C++
-
 ### 参考资料
 
 [^1]: [https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization)
@@ -158,3 +156,5 @@ fn m3() {
 [^6]: [https://doc.rust-lang.org/nomicon/unwinding.html](https://doc.rust-lang.org/nomicon/unwinding.html)
 
 [^7]: [https://rustmagazine.github.io/rust_magazine_2021/chapter_4/rust-to-system-essence-raii.html](https://rustmagazine.github.io/rust_magazine_2021/chapter_4/rust-to-system-essence-raii.html)
+
+[^8]: [https://rust-unofficial.github.io/patterns/idioms/dtor-finally.html](https://rust-unofficial.github.io/patterns/idioms/dtor-finally.html)
