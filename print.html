@@ -323,7 +323,7 @@ void main() {
     }
 }
 </code></pre>
-<p>可见对于GC语言来说，为了保证第三类资源的内存安全和异常安全，开发者需要在(1)特定的语句中(2)显式地释放资源，但是第二类资源却是不需要手动释放的，这样在两种资源处理方式上的割裂会导致即使开发者足够有经验，也可能写出内存泄漏代码，毕竟百密一疏，在所难免嘛。</p>
+<p>可见对于GC语言来说，为了保证第三类资源的内存安全和异常安全，开发者需要在(1)特定的语句中(2)显式地释放资源，但是第二类资源却是不需要手动释放的，这样在两种资源处理方式上的割裂会导致即使开发者足够有经验，也可能写出内存泄漏代码，正所谓百密一疏，在所难免。</p>
 <h2 id="rust中raii的实现方式"><a class="header" href="#rust中raii的实现方式">Rust中RAII的实现方式</a></h2>
 <p>准确来说，Rust是一门基于所有权来管理资源（Ownership-based Resource Management）的语言，根据Rust的所有权模型，所有堆上的对象都有一个栈上的owner，当栈上的owner离开作用域时，它的析构器（destructor）会自动运行，清除堆上的对象和对象持有的资源（如果有的话），这其实就是RAII的思想。</p>
 <p>在Rust中，第二、第三类资源的析构都是通过<a href="https://doc.rust-lang.org/nightly/std/ops/trait.Drop.html"><code>Drop</code></a>特性实现的，比如：</p>
@@ -331,7 +331,7 @@ void main() {
 <li>智能指针<a href="https://doc.rust-lang.org/nightly/std/ops/trait.Drop.html"><code>Box</code></a>属于第二类资源，由于实现了<code>Drop</code>特性，当栈上的owner离开scope时，owner所指向的堆上内存也会同时释放（这也是为什么称之为智能指针的原因）。</li>
 <li>标准库里<a href="https://doc.rust-lang.org/nightly/std/fs/struct.File.html"><code>File</code></a>属于第三类资源，由于实现了<code>Drop</code>特性，当栈上的owner离开scope时，文件的句柄（fd/handle）和锁（如果有）也会被关闭掉。</li>
 </ul>
-<p>也就是说，只要合理地实现<code>Drop</code>特性（大部分是lib作者的工作），编译器就会在编译期间自动插入相应的代码来实现二、三类资源的自动释放，避免资源泄漏问题，做到<strong>Write once, and off you go</strong>.</p>
+<p>也就是说，只要合理地实现<code>Drop</code>特性<sup class="footnote-reference"><a href="#8">5</a></sup>（大部分是crate author的工作），编译器就会在编译期间自动插入相应的代码来实现二、三类资源的自动释放，避免资源泄漏问题，做到<strong>Write once, and off you go</strong>.</p>
 <p>另外需要注意的一点，资源的释放不一定要在一个函数作用域结束之后（栈帧被销毁时）才被释放，在Rust中有多种方法可以提前结束一个资源的生命周期：</p>
 <pre><pre class="playground"><code class="language-rust">// drop.rs
 
@@ -381,9 +381,6 @@ fn m3() {
 <p>(Tip: 可以通过点击上面代码块右上角的运行按钮查看上面代码的运行结果)</p>
 <h2 id="为什么gc语言没有实现raii"><a class="header" href="#为什么gc语言没有实现raii">为什么GC语言没有实现RAII</a></h2>
 <p>个人认为主要是因为GC语言大多把对象分配在堆上，意味着没有像栈帧上的变量一样有一个清晰的scope和生命周期，无法把资源的释放逻辑和栈上对象绑定。同时，GC语言没有确定性析构的概念，GC什么时候回收堆上的对象完全是不确定的，也就意味着destructor什么时候被调用并不确定，这种不确定性对于一些系统资源（比如锁）来说是不能接受的。</p>
-<blockquote>
-<p>人生苦短，拥抱RAII。 --- Bjarne Stroustrup, God of C++</p>
-</blockquote>
 <h3 id="参考资料-1"><a class="header" href="#参考资料-1">参考资料</a></h3>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization">https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization</a></p>
@@ -397,17 +394,20 @@ fn m3() {
 <div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
 <p><a href="https://en.wikipedia.org/wiki/Call_stack#Unwinding">https://en.wikipedia.org/wiki/Call_stack#Unwinding</a></p>
 </div>
-<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">6</sup>
 <p><a href="https://doc.rust-lang.org/rust-by-example/scope/raii.html">https://doc.rust-lang.org/rust-by-example/scope/raii.html</a></p>
 </div>
-<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">7</sup>
 <p><a href="https://doc.rust-lang.org/nomicon/unwinding.html">https://doc.rust-lang.org/nomicon/unwinding.html</a></p>
 </div>
-<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">8</sup>
 <p><a href="https://rustmagazine.github.io/rust_magazine_2021/chapter_4/rust-to-system-essence-raii.html">https://rustmagazine.github.io/rust_magazine_2021/chapter_4/rust-to-system-essence-raii.html</a></p>
 </div>
+<div class="footnote-definition" id="8"><sup class="footnote-definition-label">5</sup>
+<p><a href="https://rust-unofficial.github.io/patterns/idioms/dtor-finally.html">https://rust-unofficial.github.io/patterns/idioms/dtor-finally.html</a></p>
+</div>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="静态和动态分派"><a class="header" href="#静态和动态分派">静态和动态分派</a></h1>
-<p><strong>多态</strong>（polymorphism）这个概念相信各位编程狗都不陌生。当涉及多态调用时，需要有一种分派（dispatch）机制来确定实际运行哪个特定的实现（方法或函数）。分派机制有两种：编译时的<strong>静态分派</strong>（static dispatch）和运行时的<strong>动态分派</strong>（dynamic dispatch）。本文主要讨论这两种分派机制。</p>
+<p><strong>多态</strong>（polymorphism）这个概念相信各位都不陌生。当涉及多态调用时，需要有一种分派（dispatch）机制来确定实际运行哪个特定的实现（方法或函数）。分派机制有两种：编译时的<strong>静态分派</strong>（static dispatch）和运行时的<strong>动态分派</strong>（dynamic dispatch）。本文主要讨论这两种分派机制。</p>
 <blockquote>
 <p>按照国际惯例，本文给出的大部分例子都是可以通过点击代码块右上角的右三角▶运行的。</p>
 </blockquote>
@@ -497,10 +497,10 @@ fn main() {
     show_u8(y);
 }
 </code></pre></pre>
-<p>单态化的优点是可以内联函数调用，实现运行时的高性能，但同时也导致了代码膨胀和编译时间的增加，这也是Rust编译速度为什么如此nice的原因之一（编译速度目前应该还没有能打的...）。</p>
+<p>单态化的优点是可以内联函数调用，实现运行时的高性能，但同时也导致了代码膨胀和编译时间的增加，这也是Rust编译速度为什么特别慢的原因之一（编译速度目前应该还没有能打的...）。</p>
 <h2 id="动态分派"><a class="header" href="#动态分派">动态分派</a></h2>
-<p>Rust的动态分派功能是通过trait对象<code>trait object</code>（如<code>Box&lt;dyn Show&gt;</code>或<code>&amp;dyn Show</code>）提供的。trait对象可以储存实现了该特性的的任意类型的值，但精确的类型只能在运行时才能确定。</p>
-<p>回到上面的例子，我们也可以用trait对象来实现运行时的动态调度：</p>
+<p>Rust的动态分派功能是通过trait对象（如<code>Box&lt;dyn Show&gt;</code>或<code>&amp;dyn Show</code>）提供的。trait对象可以储存实现了该特性的的任意类型的值，但精确的类型只能在运行时确定。</p>
+<p>回到上面的例子，我们也可以用trait对象来实现运行时的动态分派：</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
 </span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
 </span><span class="boring">trait Show {
@@ -536,8 +536,8 @@ fn main() {
     // show(&amp;y);
 }
 </code></pre></pre>
-<p>使用trait对象的函数不会在编译期被单态化，而是通过在运行时调用较慢的虚函数来实现动态分派，这样的好处是有效地抑制了进行内联和相关优化的机会。读到这里大家应该都明白为什么大部分Rust代码都是用静态分派的，不明白的可以借此机会好好思考一下。</p>
-<!-- 值得提的一点是，将一个具体的类型转化为一个trait对象时，编译器不再具有该类型的特定知识，意味着你不能再调用非trait对象上的方法了，这种现象一般叫做类型擦除（type erasure）。 -->
+<p>使用trait对象的函数不会在编译期被单态化，而是通过在运行时调用较慢的虚函数来实现动态分派，因此有效地抑制了进行内联和相关优化的机会。</p>
+<!-- 值得提的一点是，将一个具体的类型转化为一个trait对象时，编译器不再具有该类型的特定知识，意味着你不能再调用非trait对象上的方法了，我们把这种现象叫做类型擦除（type erasure）。 -->
 <!-- ```rust -->
 <!-- # // 我们定义一个简单的`Show`特性
 # // 然后分别为`u8`和`&str`实现`Show`特性
@@ -566,23 +566,24 @@ fn main() {
 <!-- } -->
 <!-- ``` -->
 <!-- 在上面的例子中，调用`str`的`to_uppercase()`方法是非法的，因为编译器已经不知道`x`是`&str`了。 -->
-<p>你可以已经注意到，在上面动态分派的例子中，trait对象在传给函数的时候是以引用的形式传入的，这是因为trait对象大小是不确定的, 不能直接传入函数，因此加了一层indirection。<code>&amp;dyn Show</code>是一个16个字节大小的胖指针（fat pointer）, 前8个字节指向具体类型携带的数据，而后8个字节指向该具体类型对应的<code>vtable</code>。以下是<code>&amp;dyn Show</code>的vtable的表示：</p>
+<p>你可以已经注意到，在上面动态分派的例子中，trait对象在传给函数的时候是以引用的形式传入的，这是因为trait对象大小是不确定的, 不能直接传入函数，因此加了一层indirection。<code>&amp;dyn Show</code>是一个16字节大小的胖指针（fat pointer）, 前8个字节指向具体类型携带的数据，而后8个字节指向该具体类型对应的<code>vtable</code>。以下是<code>&amp;dyn Show</code>的vtable可以用如下结构体表示：</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct ShowVtable {
-    // 指向析构器的指针, 如果实现了`Drop`特性
+    // 指向析构器的指针, 如果实现了`Drop`特性的话
     destructor: fn(*mut ()),
     // 数据的大小
     size: usize,
     // 数据的对齐要求
     align: usize,
     // 具体实现的函数指针
-    // 可能有多个，我们的`Show`特性只有一个方法
+    // 可能有多个，但这里的`Show`特性只有一个方法
     show: fn(*const ()),
 }
 <span class="boring">}
 </span></code></pre></pre>
+<p>一个trait对象的内存布局如下图所示：</p>
 <p><img src="rust_core_concepts/../img/trait_object.png" alt="Trait Ojbect" /></p>
 <h2 id="参考资料-2"><a class="header" href="#参考资料-2">参考资料</a></h2>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>

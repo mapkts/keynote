@@ -173,7 +173,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="静态和动态分派"><a class="header" href="#静态和动态分派">静态和动态分派</a></h1>
-<p><strong>多态</strong>（polymorphism）这个概念相信各位编程狗都不陌生。当涉及多态调用时，需要有一种分派（dispatch）机制来确定实际运行哪个特定的实现（方法或函数）。分派机制有两种：编译时的<strong>静态分派</strong>（static dispatch）和运行时的<strong>动态分派</strong>（dynamic dispatch）。本文主要讨论这两种分派机制。</p>
+<p><strong>多态</strong>（polymorphism）这个概念相信各位都不陌生。当涉及多态调用时，需要有一种分派（dispatch）机制来确定实际运行哪个特定的实现（方法或函数）。分派机制有两种：编译时的<strong>静态分派</strong>（static dispatch）和运行时的<strong>动态分派</strong>（dynamic dispatch）。本文主要讨论这两种分派机制。</p>
 <blockquote>
 <p>按照国际惯例，本文给出的大部分例子都是可以通过点击代码块右上角的右三角▶运行的。</p>
 </blockquote>
@@ -263,10 +263,10 @@ fn main() {
     show_u8(y);
 }
 </code></pre></pre>
-<p>单态化的优点是可以内联函数调用，实现运行时的高性能，但同时也导致了代码膨胀和编译时间的增加，这也是Rust编译速度为什么如此nice的原因之一（编译速度目前应该还没有能打的...）。</p>
+<p>单态化的优点是可以内联函数调用，实现运行时的高性能，但同时也导致了代码膨胀和编译时间的增加，这也是Rust编译速度为什么特别慢的原因之一（编译速度目前应该还没有能打的...）。</p>
 <h2 id="动态分派"><a class="header" href="#动态分派">动态分派</a></h2>
-<p>Rust的动态分派功能是通过trait对象<code>trait object</code>（如<code>Box&lt;dyn Show&gt;</code>或<code>&amp;dyn Show</code>）提供的。trait对象可以储存实现了该特性的的任意类型的值，但精确的类型只能在运行时才能确定。</p>
-<p>回到上面的例子，我们也可以用trait对象来实现运行时的动态调度：</p>
+<p>Rust的动态分派功能是通过trait对象（如<code>Box&lt;dyn Show&gt;</code>或<code>&amp;dyn Show</code>）提供的。trait对象可以储存实现了该特性的的任意类型的值，但精确的类型只能在运行时确定。</p>
+<p>回到上面的例子，我们也可以用trait对象来实现运行时的动态分派：</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">// 我们定义一个简单的`Show`特性
 </span><span class="boring">// 然后分别为`u8`和`&amp;str`实现`Show`特性
 </span><span class="boring">trait Show {
@@ -302,8 +302,8 @@ fn main() {
     // show(&amp;y);
 }
 </code></pre></pre>
-<p>使用trait对象的函数不会在编译期被单态化，而是通过在运行时调用较慢的虚函数来实现动态分派，这样的好处是有效地抑制了进行内联和相关优化的机会。读到这里大家应该都明白为什么大部分Rust代码都是用静态分派的，不明白的可以借此机会好好思考一下。</p>
-<!-- 值得提的一点是，将一个具体的类型转化为一个trait对象时，编译器不再具有该类型的特定知识，意味着你不能再调用非trait对象上的方法了，这种现象一般叫做类型擦除（type erasure）。 -->
+<p>使用trait对象的函数不会在编译期被单态化，而是通过在运行时调用较慢的虚函数来实现动态分派，因此有效地抑制了进行内联和相关优化的机会。</p>
+<!-- 值得提的一点是，将一个具体的类型转化为一个trait对象时，编译器不再具有该类型的特定知识，意味着你不能再调用非trait对象上的方法了，我们把这种现象叫做类型擦除（type erasure）。 -->
 <!-- ```rust -->
 <!-- # // 我们定义一个简单的`Show`特性
 # // 然后分别为`u8`和`&str`实现`Show`特性
@@ -332,23 +332,24 @@ fn main() {
 <!-- } -->
 <!-- ``` -->
 <!-- 在上面的例子中，调用`str`的`to_uppercase()`方法是非法的，因为编译器已经不知道`x`是`&str`了。 -->
-<p>你可以已经注意到，在上面动态分派的例子中，trait对象在传给函数的时候是以引用的形式传入的，这是因为trait对象大小是不确定的, 不能直接传入函数，因此加了一层indirection。<code>&amp;dyn Show</code>是一个16个字节大小的胖指针（fat pointer）, 前8个字节指向具体类型携带的数据，而后8个字节指向该具体类型对应的<code>vtable</code>。以下是<code>&amp;dyn Show</code>的vtable的表示：</p>
+<p>你可以已经注意到，在上面动态分派的例子中，trait对象在传给函数的时候是以引用的形式传入的，这是因为trait对象大小是不确定的, 不能直接传入函数，因此加了一层indirection。<code>&amp;dyn Show</code>是一个16字节大小的胖指针（fat pointer）, 前8个字节指向具体类型携带的数据，而后8个字节指向该具体类型对应的<code>vtable</code>。以下是<code>&amp;dyn Show</code>的vtable可以用如下结构体表示：</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>struct ShowVtable {
-    // 指向析构器的指针, 如果实现了`Drop`特性
+    // 指向析构器的指针, 如果实现了`Drop`特性的话
     destructor: fn(*mut ()),
     // 数据的大小
     size: usize,
     // 数据的对齐要求
     align: usize,
     // 具体实现的函数指针
-    // 可能有多个，我们的`Show`特性只有一个方法
+    // 可能有多个，但这里的`Show`特性只有一个方法
     show: fn(*const ()),
 }
 <span class="boring">}
 </span></code></pre></pre>
+<p>一个trait对象的内存布局如下图所示：</p>
 <p><img src="../img/trait_object.png" alt="Trait Ojbect" /></p>
 <h2 id="参考资料"><a class="header" href="#参考资料">参考资料</a></h2>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
