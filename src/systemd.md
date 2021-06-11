@@ -1,6 +1,6 @@
 # systemd
 
-systemd是一个Linux系统基础组件的集合，提供了一个系统和服务管理器，运行为PID 1并负责启动其它程序[^1]。systemd目前已成为大部分Linux发行版的标准配置，可用以下命令验证当前系统是否使用systemd：
+systemd是一个Linux系统基础组件的集合，提供了一个系统和服务管理器，运行为PID 1并负责启动其它程序[^1]。systemd是大部分Linux发行版的标准配置，可用以下命令验证当前系统是否使用systemd：
 
 ```bash
 # 第一行有systemd的话表示pid 1为systemd
